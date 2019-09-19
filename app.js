@@ -11,6 +11,7 @@ app.use(express.static('public'))
 //json 데이터를 받기 위한 post(클라이언트의 응답 json형태 및 Post 받기 설정)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
+app.set('view engine', 'ejs')
 
 //url routing
 app.get('/', function(req, res) {
@@ -29,7 +30,10 @@ app.post('/email_post', function(req, res) {
     console.log(req.body.email)
     //get -> req.param('email')
     //post -> body.parser(npm install body-parser --save)
-    res.send('<h1>Welcome '+ req.body.email + '</h1>');
+    
+    // response
+    // res.send('<h1>Welcome '+ req.body.email + '</h1>');
+    res.render('email.ejs', {'email' : req.body.email})
 })
 
 
