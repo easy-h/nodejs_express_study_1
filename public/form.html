@@ -8,8 +8,34 @@
 </head>
 <body>
     <form action="/email_post" method="post">
-        email : <input type="text" name="email">
+        email : <input type="text" name="email"><br>
         <input type="submit">
     </form>
+
+    <button class="ajaxSend">ajaxSend</button>
+
+    <div class="result"></div>
+
+    <script>
+        document.querySelector('.ajaxSend').addEventListener('click', function() {
+            var inputData = document.forms[0].elements[0].value;
+            sendAjax("http://localhost:3000/ajax_send_email", inputData);
+        });
+
+        function sendAjax(url, data) {
+            var data = {'email' : data};
+            data = JSON.stringify(data);
+            //URL로 보내기(method, url, data)
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(data);
+            xhr.addEventListener('load', function() {
+                var result = JSON.parse(xhr.responseText);
+                console.log(result);
+                document.querySelector('.result').innerHTML = '<h1>ID : ' + result.email + '님 환영합니다.';
+            });
+        }
+    </script>
 </body>
 </html>

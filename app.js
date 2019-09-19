@@ -1,10 +1,21 @@
 var express = require('express')
 var app = express()
 var bodyParser = require('body-parser')
+var mysql = require('mysql')
 app.listen(3000, function() {
     console.log("start node.js server on port 3000 !")
 });
 
+//mysql 연결 
+var connection = mysql.createConnection({
+    host : 'localhost',
+    port : 3306,
+    user : 'easyh',
+    database : 'study_js'
+})
+connection.connect();
+
+//Controller 같은 역할
 //static setting
 app.use(express.static('public'))
 
@@ -34,6 +45,13 @@ app.post('/email_post', function(req, res) {
     // response
     // res.send('<h1>Welcome '+ req.body.email + '</h1>');
     res.render('email.ejs', {'email' : req.body.email})
+})
+
+app.post('/ajax_send_email', function(req, res) {
+    //sendAjax에 의한 호출
+    console.log("ajax : " + req.body.email);
+    var responseData = {'result' : 'OK', 'email' : req.body.email};
+    res.json(responseData);
 })
 
 
