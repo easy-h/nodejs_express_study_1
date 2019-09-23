@@ -50,8 +50,25 @@ app.post('/email_post', function(req, res) {
 app.post('/ajax_send_email', function(req, res) {
     //sendAjax에 의한 호출
     console.log("ajax : " + req.body.email);
-    var responseData = {'result' : 'OK', 'email' : req.body.email};
-    res.json(responseData);
+    // var responseData = {'result' : 'OK', 'email' : req.body.email};
+    
+    //check Validate 
+    var email = req.body.email;
+    var responseData = {};
+
+    var query = connection.query("select * from USER where email='"+email+"'", function(err, rows) {
+        if(err) throw err;
+        if(rows[0]) {
+            console.log(rows[0]);
+            responseData.result = "ok";
+            responseData.name = rows[0].name;
+        } else {
+            responseData.result = "none";
+            responseData.name = "";
+        }
+        res.json(responseData);
+    })
+
 })
 
 

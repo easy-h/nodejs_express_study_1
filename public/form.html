@@ -32,8 +32,11 @@
             xhr.send(data);
             xhr.addEventListener('load', function() {
                 var result = JSON.parse(xhr.responseText);
+                var resultDiv = document.querySelector('.result');
                 console.log(result);
-                document.querySelector('.result').innerHTML = '<h1>ID : ' + result.email + '님 환영합니다.';
+
+                if(result.result === 'ok') resultDiv.innerHTML = '<h1>ID : ' + result.name + '님 환영합니다.'
+                else resultDiv.innerHTML = "your email is not found";
             });
         }
     </script>
