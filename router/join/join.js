@@ -20,4 +20,18 @@ router.get('/', function(req,res) {
     res.sendFile(path.join(__dirname, '../../public/join.html'))
 });
 
+//db insert하기 (escape 문서 확인)
+router.post('/', function(req,res) {
+    var body = req.body;
+    var email = body.email;
+    var name = body.name;
+    var password = body.password;
+
+    console.log(email);
+    var sql = connection.query('insert into user (email, name, pw) values ("' + email + '", "' + name + '", "' + password + '")', function (err, rows) {
+      if(err) { throw err};
+      console.log("success DB insert");
+    })
+});
+
 module.exports = router;
