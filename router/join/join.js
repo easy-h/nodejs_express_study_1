@@ -1,6 +1,8 @@
 var express = require('express')
 var app = express()
 var router = express.Router()
+var passport = require('passport')
+var localStrategy = require('passport-local').Strategy
 //상대경로
 var path = require('path')
 
@@ -17,22 +19,33 @@ connection.connect();
 
 router.get('/', function(req,res) {
     console.log("/join come;")
-    res.sendFile(path.join(__dirname, '../../public/join.html'))
+    // res.sendFile(path.join(__dirname, '../../public/join.html'))
+    res.render('join.ejs');
 });
 
-//db insert하기 (escape 문서 확인)
-router.post('/', function(req,res) {
-    var body = req.body;
-    var email = body.email;
-    var name = body.name;
-    var password = body.password;
+passport.use('local-join', new localStrategy({
+    userNameField : 'email',
+    passwordField : 'password',
+    passReqToCallback : true },
+    function(req, email, password, done) {
+        console.log("local-join callback called");
+    }
+));
 
-    //escape 사용
-    var sql = {email : email, name : name, pw : password}
-    var query = connection.query('insert into user set ?', sql, function (err, rows) {
-      if(err) throw err;
-      else res.render('welcome.ejs', {'name' : name, 'id' : rows.insertId})
-    })
-});
+
+// //db insert하기 (escape 문서 확인)
+// router.post('/', function(req,res) {
+//     var body = req.body;
+//     var email = body.email;
+//     var name = body.name;
+//     var password = body.password;
+
+//     //escape 사용
+//     var sql = {email : email, name : name, pw : password}
+//     var query = connection.query('insert into user set ?', sql, function (err, rows) {
+//       if(err) throw err;
+//       else res.render('welcome.ejs', {'name' : name, 'id' : rows.insertId})
+//     })
+// });
 
 module.exports = router;
