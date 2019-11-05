@@ -4,7 +4,7 @@ var app = express()
 var bodyParser = require('body-parser')
 var router = require('./router/index')
 var passport = require('passport')
-var localStrategy = require('passport-local').Strategy
+var LocalStrategy = require('passport-local').Strategy
 var session = require('express-session')
 var flash = require('connect-flash')
 

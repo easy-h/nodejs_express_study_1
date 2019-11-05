@@ -2,7 +2,7 @@ var express = require('express')
 var app = express()
 var router = express.Router()
 var passport = require('passport')
-var localStrategy = require('passport-local').Strategy
+var LocalStrategy = require('passport-local').Strategy
 //상대경로
 var path = require('path')
 
@@ -18,19 +18,37 @@ var connection = mysql.createConnection({
 connection.connect();
 
 router.get('/', function(req,res) {
-    console.log("/join come;")
+    console.log("/join come")
     // res.sendFile(path.join(__dirname, '../../public/join.html'))
     res.render('join.ejs');
 });
 
-passport.use('local-join', new localStrategy({
-    userNameField : 'email',
-    passwordField : 'password',
-    passReqToCallback : true },
-    function(req, email, password, done) {
+router.post('/', passport.authenticate('local-join', {
+    successRedirect : '/main',
+    failureRedirect : '/join',
+    failureFlash : true
+}))
+
+passport.use('local-join', new LocalStrategy({
+    userNameField:'email',
+    passwordField:'password',
+    passReqToCallback:true
+    }, function(req, email, password, done) {
         console.log("local-join callback called");
+        var query = connection.query('select * from user where email=?', [email], function(err, rows) {
+            if(err) return done(err);
+
+            if(rows.length) {
+                console.log("existed user")
+                return done(null, false, {message : 'your email is already used'})
+            } else {
+
+            }
+        }) 
     }
 ));
+
+
 
 
 // //db insert하기 (escape 문서 확인)
