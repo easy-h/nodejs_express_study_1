@@ -1,12 +1,8 @@
 var express = require('express')
-var app = express()
 var router = express.Router()
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
-//상대경로
-var path = require('path')
 
-//DB setting
 var mysql = require('mysql')
 //mysql 연결 
 var connection = mysql.createConnection({
@@ -15,55 +11,55 @@ var connection = mysql.createConnection({
     user : 'easyh',
     database : 'study_js'
 })
-connection.connect();
+connection.connect()
+
+//passport에서 done에서 값이 있을때 처리하는 기능
+passport.serializeUser(function(user, done) {
+    console.log('passport session save : ', user.id);
+    done(null, user.id);
+})
+
+passport.deserializeUser(function(id, done) {
+    console.log('passport session save : ', id);
+    done(null, id);
+})
 
 router.get('/', function(req,res) {
-    console.log("/join come")
+    console.log("/join get")
     // res.sendFile(path.join(__dirname, '../../public/join.html'))
-    res.render('join.ejs');
-});
+    var msg;
+    var errMsg = req.flash('error')
+    if(errMsg) msg = errMsg;
+
+    res.render('join.ejs', {'message' : msg});
+})
 
 router.post('/', passport.authenticate('local-join', {
-    successRedirect : '/main',
+    successRedirect : '/main', //인증성공시 이동하는화면주소
     failureRedirect : '/join',
-    failureFlash : true
-}))
+    failureFlash : true })
+)
 
 passport.use('local-join', new LocalStrategy({
-    userNameField:'email',
+    usernameField:'email',
     passwordField:'password',
-    passReqToCallback:true
-    }, function(req, email, password, done) {
-        console.log("local-join callback called");
-        var query = connection.query('select * from user where email=?', [email], function(err, rows) {
-            if(err) return done(err);
+    passReqToCallback : true
+}, function (req, email, password, done) {
+    var query = connection.query('select * from USER where email=?', [email], function(err, rows) {
+        if(err) return done(err);
 
-            if(rows.length) {
-                console.log("existed user")
-                return done(null, false, {message : 'your email is already used'})
-            } else {
-
-            }
-        }) 
-    }
+        if(rows.length) {
+            console.log("existed user");
+            return done(null, false, {message : 'your email is already used'})
+        } else {
+            var sql = {email : email, pw:password};
+            var query = connection.query('insert into USER set ?', sql, (err, rows)=>{
+                if(err) throw err;
+                return done(null, {'email' : email, 'id' : rows.insertId })
+            })
+        }
+    })
+   }
 ));
-
-
-
-
-// //db insert하기 (escape 문서 확인)
-// router.post('/', function(req,res) {
-//     var body = req.body;
-//     var email = body.email;
-//     var name = body.name;
-//     var password = body.password;
-
-//     //escape 사용
-//     var sql = {email : email, name : name, pw : password}
-//     var query = connection.query('insert into user set ?', sql, function (err, rows) {
-//       if(err) throw err;
-//       else res.render('welcome.ejs', {'name' : name, 'id' : rows.insertId})
-//     })
-// });
 
 module.exports = router;

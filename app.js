@@ -11,6 +11,12 @@ var flash = require('connect-flash')
 app.listen(3000, function() {
     console.log("start node.js server on port 3000 !")
 });
+//static setting
+app.use(express.static('public'))
+//json 데이터를 받기 위한 post(클라이언트의 응답 json형태 및 Post 받기 설정)
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended:true}))
+app.set('view engine', 'ejs')
 
 app.use(session({
   //세션 암호화 키값
@@ -21,15 +27,8 @@ app.use(session({
   saveUninitialized : true
 }))
 
-app.use(passport.initialize())
-app.use(passport.session())
-app.use(flash())
-//static setting
-app.use(express.static('public'))
-//json 데이터를 받기 위한 post(클라이언트의 응답 json형태 및 Post 받기 설정)
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended:true}))
-app.set('view engine', 'ejs')
-
-app.use(router)
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+app.use(router);
 

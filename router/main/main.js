@@ -6,8 +6,12 @@ var router = express.Router()
 var path = require('path')
 
 router.get('/', function(req, res) {
-    console.log("/main")
-    res.sendFile(path.join(__dirname, "../public/main.html"))
+    //로그인 인증이 성공했을 때
+    console.log("main.js -> ", req.user)
+    var id = req.user;
+
+    res.render('main.ejs', {'id': id})
+    // res.sendFile(path.join(__dirname, "../public/main.html"))
 });
 
 //외부 라이브러리를 module로 가져올 수 있다.
