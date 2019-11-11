@@ -17,26 +17,25 @@
 
     <script>
         document.querySelector('.ajaxSend').addEventListener('click', function() {
-            var email = document.getElementsByName('email')[0].value
+            var email = document.getElementsByName('email')[0].value;
             var password = document.getElementsByName('password')[0].value;
-            sendAjax("http://localhost:3000/login", {'email' : email, 'password' : password});
+            sendAjax('http://localhost:3000/login', {'email' : email, 'password': password});
         })
 
         function sendAjax(url, data) {
-            
+            data = JSON.stringify(data);
             //URL로 보내기(method, url, data)
             var xhr = new XMLHttpRequest();
             xhr.open('POST', url);
-            xhr.setRequestHeader("Content-Type", "application/text");
-            xhr.send(JSON.stringify(data));
+            xhr.setRequestHeader('Content-Type',"application/json");
+            xhr.send(data);
             
             xhr.addEventListener('load', function() {
                 var result = JSON.parse(xhr.responseText);
                 var resultDiv = document.querySelector('.result');
-                console.log(result);
 
-                if(result.email) {resultDiv.innerHTML = '<h1>ID : ' + result.name + '님 환영합니다.'}
-                else resultDiv.innerHTML = "your email is not found";
+                if(result.email) {resultDiv.innerHTML = '<h1>ID : ' + result.email + '님 환영합니다.'}
+                else resultDiv.innerHTML = result;
             });
         }
     </script>
