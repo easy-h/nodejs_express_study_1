@@ -6,6 +6,7 @@ var main = require('./main/main')
 var email = require('./email/email')
 var join = require('./join/join')
 var login = require('./login/login')
+var logout = require('./logout/logout')
 
 //상대경로
 var path = require('path')
@@ -19,5 +20,7 @@ router.use('/main', main)
 router.use('/email', email)
 router.use('/join', join)
 router.use('/login', login)
+router.use('/logout', logout)
+
 
 module.exports = router;

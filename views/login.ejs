@@ -34,8 +34,14 @@
                 var result = JSON.parse(xhr.responseText);
                 var resultDiv = document.querySelector('.result');
 
-                if(result.email) {resultDiv.innerHTML = '<h1>ID : ' + result.email + '님 환영합니다.'}
-                else resultDiv.innerHTML = result;
+                if(result.email) {
+                    // resultDiv.innerHTML = '<h1>ID : ' + result.email + '님 환영합니다.';
+                    window.location.href = '/main';
+                } else if(xhr.status === 401) {
+                    resultDiv.innerHTML = result + '<div><a href="/join">Sign up</a></div>';
+                } else {
+                    resultDiv.innerHTML = result;
+                }
             });
         }
     </script>
